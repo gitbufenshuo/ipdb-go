@@ -52,21 +52,8 @@ type reader struct {
 	refType map[string]string
 }
 
-func newReader(name string, obj interface{}) (*reader, error) {
-	var err error
-	var fileInfo os.FileInfo
-	fileInfo, err = os.Stat(name)
-	if err != nil {
-		return nil, err
-	}
-	fileSize := int(fileInfo.Size())
-	if fileSize < 4 {
-		return nil, ErrFileSize
-	}
-	body, err := ioutil.ReadFile(name)
-	if err != nil {
-		return nil, ErrReadFull
-	}
+func newReaderFromBytes(body []byte, obj interface{}) (*reader, error) {
+	var fileSize = len(body)
 	var meta MetaData
 	metaLength := int(binary.BigEndian.Uint32(body[0:4]))
 	if fileSize < (4 + metaLength) {
@@ -115,6 +102,24 @@ func newReader(name string, obj interface{}) (*reader, error) {
 	}
 
 	return db, nil
+}
+func newReader(name string, obj interface{}) (*reader, error) {
+	var err error
+	var fileInfo os.FileInfo
+	fileInfo, err = os.Stat(name)
+	if err != nil {
+		return nil, err
+	}
+	fileSize := int(fileInfo.Size())
+	if fileSize < 4 {
+		return nil, ErrFileSize
+	}
+	body, err := ioutil.ReadFile(name)
+	if err != nil {
+		return nil, ErrReadFull
+	}
+
+	return newReaderFromBytes(body, obj)
 }
 
 func (db *reader) Find(addr, language string) ([]string, error) {
