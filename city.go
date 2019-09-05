@@ -1,6 +1,7 @@
 package ipdb
 
 import (
+	"bytes"
 	"os"
 	"reflect"
 	"time"
@@ -88,8 +89,16 @@ func (db *City) FindMap(addr, language string) (map[string]string, error) {
 func (db *City) IsIPProvince(addr string, province []byte) bool {
 	return db.reader.IsIPProvince(addr, province)
 }
-func (db *City) FindRaw(addr string) []byte {
-	return db.reader.FindRaw(addr)
+func (db *City) FindProvinceRaw(addr string) []byte {
+	r := db.reader.FindRaw(addr)
+	if len(r) == 0 {
+		return nil
+	}
+	segs := bytes.Split(r, []byte("\t"))
+	if len(segs) >= 2 {
+		return segs[1]
+	}
+	return nil
 }
 
 // FindInfo query with addr
