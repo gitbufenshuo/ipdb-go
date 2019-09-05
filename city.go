@@ -85,6 +85,9 @@ func (db *City) FindMap(addr, language string) (map[string]string, error) {
 
 	return info, nil
 }
+func (db *City) IsIPProvince(addr string, province []byte) bool {
+	return db.reader.IsIPProvince(addr, province)
+}
 
 // FindInfo query with addr
 func (db *City) FindInfo(addr, language string) (*CityInfo, error) {

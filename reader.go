@@ -1,6 +1,7 @@
 package ipdb
 
 import (
+	"bytes"
 	"encoding/binary"
 	"encoding/json"
 	"errors"
@@ -124,6 +125,14 @@ func newReader(name string, obj interface{}) (*reader, error) {
 
 func (db *reader) Find(addr, language string) ([]string, error) {
 	return db.find1(addr, language)
+}
+
+func (db *reader) IsIPProvince(addr string, province []byte) bool {
+	body, err := db.find0(addr)
+	if err != nil {
+		return false
+	}
+	return bytes.Contains(body, province)
 }
 
 func (db *reader) FindMap(addr, language string) (map[string]string, error) {
