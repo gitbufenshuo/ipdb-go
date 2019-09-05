@@ -134,7 +134,13 @@ func (db *reader) IsIPProvince(addr string, province []byte) bool {
 	}
 	return bytes.Contains(body, province)
 }
-
+func (db *reader) FindRaw(addr string) []byte {
+	body, err := db.find0(addr)
+	if err != nil {
+		return nil
+	}
+	return body
+}
 func (db *reader) FindMap(addr, language string) (map[string]string, error) {
 
 	data, err := db.find1(addr, language)
