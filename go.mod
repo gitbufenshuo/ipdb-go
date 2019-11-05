@@ -1,3 +1,3 @@
-module github.com/ipipdotnet/ipdb-go
+module github.com/gitbufenshuo/ipdb-go
 
 go 1.13
